@@ -1,16 +1,15 @@
 'use client'
 
 import { ProductCard } from './ProductCard'
-import products from '@/data/products.json'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
-import { ProductCarousel } from '@/components/ui/ProductCarousel'
+import { Product } from '@/types/product'
 
 interface ProductGridProps {
   title: string
-  items: typeof products.newArrivals | typeof products.bestSellers
+  items: Product[]
 }
 
 export function ProductGrid({ title, items }: ProductGridProps) {
@@ -18,7 +17,7 @@ export function ProductGrid({ title, items }: ProductGridProps) {
     <section className="w-full py-10 sm:py-12 px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl">
       <SectionHeading title={title} subtitle="Premium quality products selected just for you" />
 
-      <ProductCarousel>
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
         {items.map((product) => (
           <motion.div
             key={product.id}
@@ -27,15 +26,24 @@ export function ProductGrid({ title, items }: ProductGridProps) {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <ProductCard {...product} />
+            <ProductCard
+              id={product.id}
+              name={product.name}
+              category={product.category}
+              price={product.price}
+              originalPrice={product.originalPrice}
+              image={product.image}
+              badge={product.badge}
+              rating={product.rating}
+            />
           </motion.div>
         ))}
-      </ProductCarousel>
+      </div>
 
       {/* View All Link */}
       <div className="flex justify-end mt-12">
         <Link
-          href={`/collections/${title.toLowerCase().replace(' ', '-')}`}
+          href="/products"
           className="group flex items-center gap-2 text-brand-black hover:text-brand-red font-black uppercase tracking-widest transition-all duration-300"
         >
           <span className="text-sm">View All</span>

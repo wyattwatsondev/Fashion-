@@ -74,27 +74,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
                 </p>
             </div>
 
-            {/* Color Selector */}
-            <div className="space-y-2">
-                <h3 className="font-bold text-sm text-[#1A1A1A]">
-                    Color: <span className="text-gray-400 font-medium">{selectedColor}</span>
-                </h3>
-                <div className="flex gap-2">
-                    {product.colors.map((color) => (
-                        <button
-                            key={color.name}
-                            onClick={() => setSelectedColor(color.name)}
-                            className={`w-10 h-10 rounded-lg border p-0.5 transition-all ${selectedColor === color.name ? 'border-black' : 'border-transparent'
-                                }`}
-                        >
-                            <div
-                                className="w-full h-full rounded shadow-inner"
-                                style={{ backgroundColor: color.value }}
-                            />
-                        </button>
-                    ))}
-                </div>
-            </div>
+         
 
             {/* Size Selector */}
             <div className="space-y-2">

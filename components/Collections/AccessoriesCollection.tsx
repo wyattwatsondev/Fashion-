@@ -2,56 +2,24 @@
 
 import { ProductCard } from '@/components/ProductGrid/ProductCard'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
-import { ProductCarousel } from '@/components/ui/ProductCarousel'
+import { Product } from '@/types/product'
 
-const accessoriesProducts = [
-  {
-    id: 1,
-    name: 'Vintage Baseball Cap',
-    price: '$34.99',
-    image: '/ProductImages/17.jpg',
-    rating: 4.7,
-    reviews: 89,
-  },
-  {
-    id: 2,
-    name: 'Sports Performance Cap',
-    price: '$39.99',
-    image: '/ProductImages/47.jpg',
-    rating: 4.8,
-    reviews: 112,
-  },
-  {
-    id: 3,
-    name: 'Classic Trucker Cap',
-    price: '$36.99',
-    image: '/ProductImages/67.jpg',
-    rating: 4.6,
-    reviews: 74,
-  },
-  {
-    id: 4,
-    name: 'Premium Denim Jacket',
-    price: '$129.99',
-    image: '/ProductImages/64.jpg',
-    rating: 4.9,
-    reviews: 187,
-  },
-]
+interface AccessoriesCollectionProps {
+  products: Product[]
+}
 
-export function AccessoriesCollection() {
+export function AccessoriesCollection({ products }: AccessoriesCollectionProps) {
   return (
     <section className="w-full py-10 sm:py-12 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
-        <SectionHeading title="Accessories & More" subtitle="Complete your look with our premium quality handpicked accessories" />
+        <SectionHeading title="Accessories & More" subtitle="Complete your look with our premium caps & accessories" />
 
-        {/* Products Grid */}
-        <ProductCarousel>
-          {accessoriesProducts.map((product) => (
+        {/* 4-col grid, 1 row = 4 products */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          {products.map((product) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
@@ -62,18 +30,20 @@ export function AccessoriesCollection() {
                 id={product.id}
                 name={product.name}
                 price={product.price}
+                originalPrice={product.originalPrice}
                 image={product.image}
                 rating={product.rating}
-                category="Accessories"
+                badge={product.badge}
+                category={product.category}
               />
             </motion.div>
           ))}
-        </ProductCarousel>
+        </div>
 
         {/* View All Link */}
         <div className="flex justify-end mt-12">
           <Link
-            href="/collections/accessories"
+            href="/products?category=caps-hats"
             className="group flex items-center gap-2 text-brand-black hover:text-brand-red font-black uppercase tracking-widest transition-all duration-300"
           >
             <span className="text-sm">View All</span>

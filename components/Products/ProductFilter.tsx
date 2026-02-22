@@ -57,10 +57,10 @@ export function ProductFilter() {
     ]
 
     return (
-        <div className="space-y-8 pr-8 lg:border-r border-gray-100 h-full">
+        <div className="space-y-8 lg:pr-8 lg:border-r border-gray-100 h-full">
             <div>
                 <h3 className="text-sm font-bold uppercase tracking-widest text-gray-900 mb-6">Categories</h3>
-                <div className="space-y-4">
+                <div className="grid grid-cols-3 gap-x-2 gap-y-3 lg:flex lg:flex-col lg:space-y-4">
                     {/* All Option */}
                     <div className="flex items-center space-x-3 group cursor-pointer" onClick={() => handleCategoryChange('')}>
                         <Checkbox
@@ -71,7 +71,7 @@ export function ProductFilter() {
                         />
                         <Label
                             htmlFor="all-categories"
-                            className={`text-sm font-medium cursor-pointer transition-colors ${!currentCategory ? 'text-black font-bold' : 'text-gray-500 group-hover:text-black'}`}
+                            className={`text-[10px] sm:text-xs font-medium cursor-pointer transition-colors ${!currentCategory ? 'text-black font-bold' : 'text-gray-500 group-hover:text-black'}`}
                         >
                             All
                         </Label>
@@ -87,7 +87,7 @@ export function ProductFilter() {
                             />
                             <Label
                                 htmlFor={category.id}
-                                className={`text-sm font-medium cursor-pointer transition-colors ${currentCategory === category.id ? 'text-black font-bold' : 'text-gray-500 group-hover:text-black'}`}
+                                className={`text-[10px] sm:text-xs font-medium cursor-pointer transition-colors ${currentCategory === category.id ? 'text-black font-bold' : 'text-gray-500 group-hover:text-black'}`}
                             >
                                 {category.name}
                             </Label>
@@ -98,7 +98,7 @@ export function ProductFilter() {
 
             <div>
                 <h3 className="text-sm font-bold uppercase tracking-widest text-gray-900 mb-6">Price Range</h3>
-                <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-x-2 gap-y-3 lg:flex lg:flex-col lg:space-y-4">
                     {priceRanges.map((range, index) => (
                         <div key={index} className="flex items-center space-x-3 group cursor-pointer" onClick={() => handlePriceChange(range.min, range.max)}>
                             <Checkbox
@@ -109,7 +109,7 @@ export function ProductFilter() {
                             />
                             <Label
                                 htmlFor={`price-${index}`}
-                                className={`text-sm font-medium cursor-pointer transition-colors ${minPrice === range.min.toString() && maxPrice === range.max.toString() ? 'text-black font-bold' : 'text-gray-500 group-hover:text-black'}`}
+                                className={`text-[10px] sm:text-xs font-medium cursor-pointer transition-colors ${minPrice === range.min.toString() && maxPrice === range.max.toString() ? 'text-black font-bold' : 'text-gray-500 group-hover:text-black'}`}
                             >
                                 {range.label}
                             </Label>

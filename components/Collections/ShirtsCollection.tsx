@@ -2,56 +2,24 @@
 
 import { ProductCard } from '@/components/ProductGrid/ProductCard'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
-import { ProductCarousel } from '@/components/ui/ProductCarousel'
+import { Product } from '@/types/product'
 
-const shirtsProducts = [
-  {
-    id: 1,
-    name: 'Classic White Shirt',
-    price: '$49.99',
-    image: '/ProductImages/9.jpg',
-    rating: 4.8,
-    reviews: 128,
-  },
-  {
-    id: 2,
-    name: 'Striped Summer Shirt',
-    price: '$59.99',
-    image: '/ProductImages/24.jpg',
-    rating: 4.6,
-    reviews: 95,
-  },
-  {
-    id: 3,
-    name: 'Navy Premium Tee',
-    price: '$54.99',
-    image: '/ProductImages/19.jpg',
-    rating: 4.9,
-    reviews: 156,
-  },
-  {
-    id: 4,
-    name: 'Floral Print Shirt',
-    price: '$64.99',
-    image: '/ProductImages/29.jpg',
-    rating: 4.7,
-    reviews: 142,
-  },
-]
+interface ShirtsCollectionProps {
+  products: Product[]
+}
 
-export function ShirtsCollection() {
+export function ShirtsCollection({ products }: ShirtsCollectionProps) {
   return (
     <section className="w-full py-10 sm:py-12 px-4 sm:px-6 lg:px-8 bg-gray-50/50">
       <div className="max-w-7xl mx-auto">
-        <SectionHeading title="Shirts Collection" subtitle="Premium quality shirts for every occasion" />
+        <SectionHeading title="Streetwear Collection" subtitle="Shirts & trousers for every vibe" />
 
-        {/* Products Grid */}
-        <ProductCarousel>
-          {shirtsProducts.map((product) => (
+        {/* 4-col grid, 2 rows = 8 products */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          {products.map((product) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
@@ -62,18 +30,20 @@ export function ShirtsCollection() {
                 id={product.id}
                 name={product.name}
                 price={product.price}
+                originalPrice={product.originalPrice}
                 image={product.image}
                 rating={product.rating}
-                category="Shirts"
+                badge={product.badge}
+                category={product.category}
               />
             </motion.div>
           ))}
-        </ProductCarousel>
+        </div>
 
         {/* View All Link */}
         <div className="flex justify-end mt-12">
           <Link
-            href="/collections/shirts"
+            href="/products?category=mens-shirts"
             className="group flex items-center gap-2 text-brand-black hover:text-brand-red font-black uppercase tracking-widest transition-all duration-300"
           >
             <span className="text-sm">View All</span>
