@@ -7,7 +7,7 @@ interface BreadcrumbsProps {
 
 export function ProductBreadcrumbs({ items }: BreadcrumbsProps) {
     return (
-        <nav className="flex items-center gap-2 text-sm text-gray-500 mb-8 py-4">
+        <nav className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-500 mb-8 py-4">
             <Link href="/" className="hover:text-black transition-colors">Homepage</Link>
             {items.map((item, index) => (
                 <React.Fragment key={index}>

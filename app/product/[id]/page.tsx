@@ -9,6 +9,7 @@ import { ProductRelated } from '@/components/ProductDetails/ProductRelated'
 import { ProductReviews } from '@/components/ProductDetails/ProductReviews'
 import { TopBar } from '@/components/Header/TopBar'
 import { Navigation } from '@/components/Header/Navigation'
+import { BackButton } from '@/components/Header/BackButton'
 import { Footer } from '@/components/Footer/Footer'
 import { ScrollToTop } from '@/components/ScrollToTop'
 import productsData from '@/data/products.json'
@@ -60,6 +61,7 @@ export default function ProductPage() {
         <div className="min-h-screen bg-white flex flex-col">
             <TopBar />
             <Navigation />
+            <BackButton />
 
             <main className="flex-1 bg-white">
                 <div className="container mx-auto px-4 max-w-5xl pt-8 pb-16">

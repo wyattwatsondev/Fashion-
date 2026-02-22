@@ -4,6 +4,7 @@ import { Navigation } from '@/components/Header/Navigation'
 import { Footer } from '@/components/Footer/Footer'
 import { ProductFilter } from '@/components/Products/ProductFilter'
 import { ProductListing } from '@/components/Products/ProductListing'
+import { BackButton } from '@/components/Header/BackButton'
 import { ScrollToTop } from '@/components/ScrollToTop'
 
 export default async function ProductsPage() {
@@ -11,6 +12,7 @@ export default async function ProductsPage() {
         <div className="min-h-screen bg-white">
             <TopBar />
             <Navigation />
+            <BackButton />
 
             <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex flex-col lg:flex-row gap-12">
