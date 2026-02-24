@@ -17,3 +17,19 @@ model Product {
   category    String
   createdAt   DateTime @default(now())
 }
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  email       String
+  phone       String
+  address     String
+  city        String
+  postalCode  String
+  country     String
+  total       Float
+  items       Json
+  status      String   @default("Pending")
+  createdAt   DateTime @default(now())
+}

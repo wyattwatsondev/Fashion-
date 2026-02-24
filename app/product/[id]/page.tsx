@@ -6,7 +6,6 @@ import { ProductBreadcrumbs } from '@/components/ProductDetails/ProductBreadcrum
 import { ProductGallery } from '@/components/ProductDetails/ProductGallery'
 import { ProductInfo } from '@/components/ProductDetails/ProductInfo'
 import { ProductRelated } from '@/components/ProductDetails/ProductRelated'
-import { ProductReviews } from '@/components/ProductDetails/ProductReviews'
 import { TopBar } from '@/components/Header/TopBar'
 import { Navigation } from '@/components/Header/Navigation'
 import { BackButton } from '@/components/Header/BackButton'
@@ -130,7 +129,7 @@ export default function ProductPage() {
                                 <ProductInfo product={detailedProduct!} />
                             </div>
 
-                            <ProductReviews />
+                            <ProductRelated />
                         </>
                     )}
                 </div>

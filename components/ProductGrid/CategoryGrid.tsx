@@ -7,15 +7,15 @@ import { motion } from 'framer-motion'
 
 export function CategoryGrid() {
   return (
-    <section className="w-full py-10 sm:py-12 px-4 sm:px-6 lg:px-8 mx-auto max-w-4xl">
+    <section className="w-full py-6 sm:py-12 px-4 sm:px-6 lg:px-8 mx-auto max-w-5xl">
       <SectionHeading title="Shop by Category" subtitle="Explore our curated collections across all major categories" />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, staggerChildren: 0.15 }}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto"
+        transition={{ duration: 0.8, staggerChildren: 0.1 }}
+        className="grid grid-cols-3 sm:grid-cols-4 gap-2 gap-y-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto mt-6"
       >
         {categories.categories.map((category) => (
           <motion.div
