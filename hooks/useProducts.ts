@@ -35,15 +35,14 @@ export function useProducts() {
         // Fetch from API if no cache or cache expired
         const res = await fetch('/api/products')
         if (!res.ok) throw new Error('Failed to fetch products')
-        const data: Product[] = await res.json()
-
-        // Save to sessionStorage only if we got real data
-        if (data && data.length > 0) {
-          const entry: CacheEntry = { data, timestamp: Date.now() }
+        const data = await res.json()
+        if (data && data.products) {
+          const entry: CacheEntry = { data: data.products, timestamp: Date.now() }
           sessionStorage.setItem(CACHE_KEY, JSON.stringify(entry))
+          setProducts(data.products)
+        } else if (Array.isArray(data)) {
+          setProducts(data)
         }
-
-        setProducts(data || [])
       } catch (err) {
         console.error('Error fetching products:', err)
         setError('Failed to load products')

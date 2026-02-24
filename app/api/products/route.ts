@@ -2,12 +2,32 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get("search") || "";
+    const skip = parseInt(searchParams.get("skip") || "0");
+    const limit = parseInt(searchParams.get("limit") || "100");
+
+    const where = search 
+      ? {
+          OR: [
+            { name: { contains: search, mode: 'insensitive' } },
+            { category: { contains: search, mode: 'insensitive' } },
+          ],
+        }
+      : {};
+
     const products = await prisma.product.findMany({
+      where: where as any,
       orderBy: { createdAt: "desc" },
+      skip: skip,
+      take: limit,
     });
-    return NextResponse.json(products);
+
+    const total = await prisma.product.count({ where: where as any });
+
+    return NextResponse.json({ products, total, skip, limit });
   } catch (error) {
     console.error("GET Products Error:", error);
     return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });

@@ -1,11 +1,11 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { ProductCard } from '@/components/ProductGrid/ProductCard'
-import productsData from '@/data/products.json'
 import { Product } from '@/types/product'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Loader2 } from 'lucide-react'
 
 function ProductCardSkeleton() {
     return (
@@ -22,46 +22,102 @@ function ProductCardSkeleton() {
     )
 }
 
+const ITEMS_PER_PAGE = 20
+
 export function ProductListing() {
     const searchParams = useSearchParams()
     const categoryFilter = searchParams.get('category')
-    const [dbProducts, setDbProducts] = useState<Product[]>([])
-    const [loading, setLoading] = useState(true)
+    const searchQuery = searchParams.get('search')
 
+    const [dbProducts, setDbProducts] = useState<Product[]>([])
+    const [total, setTotal] = useState(0)
+    const [loading, setLoading] = useState(true)
+    const [loadingMore, setLoadingMore] = useState(false)
+    const [skip, setSkip] = useState(0)
+    const [hasMore, setHasMore] = useState(true)
+
+    const observer = useRef<IntersectionObserver | null>(null)
+    const lastProductRef = useCallback((node: HTMLDivElement | null) => {
+        if (loading || loadingMore) return
+        if (observer.current) observer.current.disconnect()
+
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                setSkip(prevSkip => prevSkip + ITEMS_PER_PAGE)
+            }
+        })
+
+        if (node) observer.current.observe(node)
+    }, [loading, loadingMore, hasMore])
+
+    // Reset and fetch on filter change
     useEffect(() => {
-        const fetchDbProducts = async () => {
+        const resetAndFetch = async () => {
+            setLoading(true)
+            setSkip(0)
+            setHasMore(true)
             try {
-                const res = await fetch('/api/products')
+                const params = new URLSearchParams()
+                if (categoryFilter) params.append('search', categoryFilter)
+                if (searchQuery) params.append('search', searchQuery)
+                params.append('limit', ITEMS_PER_PAGE.toString())
+                params.append('skip', '0')
+
+                const res = await fetch(`/api/products?${params.toString()}`)
                 const data = await res.json()
-                setDbProducts(data)
+
+                if (data && data.products) {
+                    setDbProducts(data.products)
+                    setTotal(data.total || data.products.length)
+                    setHasMore(data.products.length < (data.total || data.products.length))
+                } else if (Array.isArray(data)) {
+                    setDbProducts(data)
+                    setTotal(data.length)
+                    setHasMore(false)
+                }
             } catch (error) {
                 console.error('Error fetching products from DB:', error)
             } finally {
                 setLoading(false)
             }
         }
-        fetchDbProducts()
-    }, [])
+        resetAndFetch()
+    }, [categoryFilter, searchQuery])
 
-    // Only use products from the database
-    const dbProductsFiltered = dbProducts
+    // Load more when skip changes
+    useEffect(() => {
+        if (skip === 0) return
 
-    const minPrice = searchParams.get('min_price')
-    const maxPrice = searchParams.get('max_price')
+        const fetchMore = async () => {
+            setLoadingMore(true)
+            try {
+                const params = new URLSearchParams()
+                if (categoryFilter) params.append('search', categoryFilter)
+                if (searchQuery) params.append('search', searchQuery)
+                params.append('limit', ITEMS_PER_PAGE.toString())
+                params.append('skip', skip.toString())
 
-    const filteredProducts = dbProductsFiltered.filter(p => {
-        const matchesCategory = !categoryFilter || p.category === categoryFilter
-        const price = typeof p.price === 'string' ? parseFloat(p.price) : p.price
-        const matchesMinPrice = !minPrice || price >= parseFloat(minPrice)
-        const matchesMaxPrice = !maxPrice || price <= parseFloat(maxPrice)
-        return matchesCategory && matchesMinPrice && matchesMaxPrice
-    })
+                const res = await fetch(`/api/products?${params.toString()}`)
+                const data = await res.json()
+
+                if (data && data.products) {
+                    setDbProducts(prev => [...prev, ...data.products])
+                    setHasMore(dbProducts.length + data.products.length < (data.total || 0))
+                }
+            } catch (error) {
+                console.error('Error loading more products:', error)
+            } finally {
+                setLoadingMore(false)
+            }
+        }
+        fetchMore()
+    }, [skip, categoryFilter, searchQuery, dbProducts.length]) // Added dbProducts.length to dependencies for hasMore calculation
 
     return (
         <div className="flex-1">
             <div className="flex justify-between items-center mb-8">
-                <p className="text-sm text-gray-500">
-                    Showing <span className="font-bold text-black">{filteredProducts.length}</span> products
+                <p className="text-sm text-gray-500 uppercase font-bold ">
+                    Showing <span className="font-bold text-black">{total}</span> products
                 </p>
                 <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-500">Sort by:</span>
@@ -82,22 +138,60 @@ export function ProductListing() {
             ) : (
                 <>
                     <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-                        {filteredProducts.map((product, index) => (
-                            <ProductCard
-                                key={`${product.id}-${index}`}
-                                id={product.id}
-                                name={product.name}
-                                category={product.category}
-                                price={product.price}
-                                originalPrice={'originalPrice' in product ? product.originalPrice : undefined}
-                                image={product.image}
-                                badge={'badge' in product ? product.badge : undefined}
-                                rating={'rating' in product ? product.rating : undefined}
-                            />
-                        ))}
+                        {dbProducts.map((product, index) => {
+                            if (dbProducts.length === index + 1) {
+                                return (
+                                    <div ref={lastProductRef} key={`${product.id}-${index}`}>
+                                        <ProductCard
+                                            id={product.id}
+                                            name={product.name}
+                                            category={product.category}
+                                            price={product.price}
+                                            originalPrice={'originalPrice' in product ? product.originalPrice : undefined}
+                                            image={product.image}
+                                            badge={'badge' in product ? product.badge : undefined}
+                                            rating={'rating' in product ? product.rating : undefined}
+                                        />
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <ProductCard
+                                        key={`${product.id}-${index}`}
+                                        id={product.id}
+                                        name={product.name}
+                                        category={product.category}
+                                        price={product.price}
+                                        originalPrice={'originalPrice' in product ? product.originalPrice : undefined}
+                                        image={product.image}
+                                        badge={'badge' in product ? product.badge : undefined}
+                                        rating={'rating' in product ? product.rating : undefined}
+                                    />
+                                )
+                            }
+                        })}
                     </div>
 
-                    {filteredProducts.length === 0 && (
+                    {loadingMore && (
+                        <div className="flex justify-center py-12">
+                            <div className="flex flex-col items-center gap-4">
+                                <Loader2 className="w-10 h-10 text-brand-red animate-spin" />
+                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest animate-pulse">
+                                    Loading more products...
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {!hasMore && dbProducts.length > 0 && (
+                        <div className="text-center py-12">
+                            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">
+                                You've reached the end of the collection
+                            </p>
+                        </div>
+                    )}
+
+                    {dbProducts.length === 0 && (
                         <div className="text-center py-20">
                             <p className="text-gray-500">No products found for this filter.</p>
                         </div>

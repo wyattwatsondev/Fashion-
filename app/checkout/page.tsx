@@ -1,29 +1,104 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Search, RotateCcw, Lock, Tag, HelpCircle, ChevronDown, Zap, ChevronRight, Info, ShieldCheck } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Search, RotateCcw, Lock, Tag, HelpCircle, ChevronDown, Zap, ChevronRight, Info, ShieldCheck, CheckCircle2 } from 'lucide-react'
 import { useFashionStore } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 
 export default function CheckoutPage() {
-    const { cart } = useFashionStore()
+    const { cart, clearCart } = useFashionStore()
+    const router = useRouter()
+
+    const [formData, setFormData] = useState({
+        email: '',
+        country: 'United Kingdom',
+        firstName: '',
+        lastName: '',
+        address: '',
+        apartment: '',
+        city: '',
+        postalCode: '',
+        phone: '',
+    })
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [showSuccess, setShowSuccess] = useState(false)
 
     const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
     const shipping = subtotal > 100 ? 0 : 15
     const total = subtotal + shipping
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target
+        setFormData(prev => ({ ...prev, [name]: value }))
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (cart.length === 0) {
+            alert("Your cart is empty!")
+            return
+        }
+
+        setIsSubmitting(true)
+        try {
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ...formData,
+                    total,
+                    items: cart,
+                }),
+            })
+
+            if (response.ok) {
+                setShowSuccess(true)
+                clearCart()
+            } else {
+                const errorData = await response.json()
+                alert(`Error: ${errorData.error || 'Failed to place order'}`)
+            }
+        } catch (error) {
+            console.error(error)
+            alert("An error occurred while placing your order.")
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
     return (
-        <div className="min-h-screen bg-white font-sans text-[#333] overflow-x-hidden">
-            <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px]">
+        <div className="min-h-screen bg-white font-sans text-[#333] overflow-x-hidden relative">
+            {showSuccess && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl transform transition-all text-center">
+                        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+                            <CheckCircle2 className="h-10 w-10 text-green-600" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2 uppercase tracking-tight">Order Successful!</h3>
+                        <p className="text-sm text-gray-500 mb-6">
+                            Your order was successful. We have received your order details and will process it shortly.
+                        </p>
+                        <Link href="/" className="w-full">
+                            <Button
+                                className="w-full bg-black hover:bg-gray-800 text-white font-bold h-12 rounded-lg transition-colors uppercase tracking-widest text-xs"
+                            >
+                                Return to Home
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
+            )}
+            <form onSubmit={handleSubmit} className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px]">
 
                 {/* Left Side: Forms (Main Content) */}
                 <div className="px-4 py-6 md:px-10 lg:py-10 lg:border-r border-gray-100 order-2 lg:order-1 lg:min-h-screen">
                     {/* Logo & Social Proof */}
                     <div className="flex flex-col items-center mb-8">
                         <Link href="/">
-                          <Image src="/hutlemoblogo.png" alt="Logo" width={120} height={120} className="object-contain scal-100 sm:scale-150 "/>
+                            <Image src="/hutlemoblogo.png" alt="Logo" width={120} height={120} className="object-contain scal-100 sm:scale-150 " />
                         </Link>
 
                         <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100 w-fit">
@@ -57,26 +132,7 @@ export default function CheckoutPage() {
                         <span>Payment</span>
                     </nav>
 
-                    {/* Express Checkout */}
-                    <div className="mb-6">
-                        <div className="text-center text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-3">Express checkout</div>
-                        <div className="grid grid-cols-3 gap-1.5">
-                            <button className="bg-[#5a31f4] h-[48px] rounded flex items-center justify-center hover:opacity-90 transition">
-                                <span className="text-white font-bold italic text-base">shop</span><span className="text-white font-light italic text-base">pay</span>
-                            </button>
-                            <button className="bg-[#ffc439] h-[48px] rounded flex items-center justify-center hover:opacity-90 transition p-2">
-                                <Image src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" width={80} height={20} className="h-4" />
-                            </button>
-                            <button className="bg-black h-[48px] rounded flex items-center justify-center hover:opacity-90 transition">
-                                <Image src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_Pay_Logo.svg" alt="GPay" width={60} height={20} className="h-5 brightness-0 invert" />
-                            </button>
-                        </div>
-                        <div className="flex items-center gap-3 my-8">
-                            <div className="flex-1 h-px bg-gray-200"></div>
-                            <span className="text-gray-400 text-[10px] font-bold">OR</span>
-                            <div className="flex-1 h-px bg-gray-200"></div>
-                        </div>
-                    </div>
+                  
 
                     {/* Contact Section */}
                     <section className="mb-6">
@@ -87,6 +143,10 @@ export default function CheckoutPage() {
                         <div className="space-y-3">
                             <input
                                 type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleInputChange}
+                                required
                                 placeholder="Email"
                                 className="w-full h-11 px-3 rounded-md border border-gray-300 focus:border-black outline-none text-[13px] placeholder:text-gray-400"
                             />
@@ -103,27 +163,43 @@ export default function CheckoutPage() {
                         <div className="grid grid-cols-2 gap-3">
                             <div className="col-span-2 relative">
                                 <label className="absolute top-1.5 left-3 text-[9px] text-gray-400 font-bold uppercase">Country/Region</label>
-                                <select className="w-full h-12 pt-4 pb-1 px-3 rounded-md border border-gray-300 focus:border-black outline-none text-[13px] appearance-none bg-white font-medium">
-                                    <option>United Kingdom</option>
-                                    <option>United States</option>
-                                    <option>Pakistan</option>
-                                    <option>United Arab Emirates</option>
+                                <select
+                                    name="country"
+                                    value={formData.country}
+                                    onChange={handleInputChange}
+                                    className="w-full h-12 pt-4 pb-1 px-3 rounded-md border border-gray-300 focus:border-black outline-none text-[13px] appearance-none bg-white font-medium"
+                                >
+                                    <option value="">Select Country</option>
+                                    <option value="United States">United States</option>
+                                    <option value="United Kingdom">United Kingdom</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="Australia">Australia</option>
+                                    <option value="Pakistan">Netherland</option>
+                                    <option value="India">India</option>
+                                    <option value="United Arab Emirates">United Arab Emirates</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="France">France</option>
+                                    <option value="Spain">Spain</option>
+                                    <option value="Italy">Italy</option>
+                                    <option value="Japan">Japan</option>
+                                    <option value="China">China</option>
+                                    <option value="Brazil">Brazil</option>
                                 </select>
                                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                             </div>
-                            <input type="text" placeholder="First name" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black" />
-                            <input type="text" placeholder="Last name" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black" />
+                            <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required placeholder="First name" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black" />
+                            <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required placeholder="Last name" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black" />
                             <div className="col-span-2 relative">
-                                <input type="text" placeholder="Address" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black pr-10" />
+                                <input type="text" name="address" value={formData.address} onChange={handleInputChange} required placeholder="Address" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black pr-10" />
                                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                             </div>
                             <div className="col-span-2">
-                                <input type="text" placeholder="Apartment, suite, etc. (optional)" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black" />
+                                <input type="text" name="apartment" value={formData.apartment} onChange={handleInputChange} placeholder="Apartment, suite, etc. (optional)" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black" />
                             </div>
-                            <input type="text" placeholder="City" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black" />
-                            <input type="text" placeholder="Postal code" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black" />
+                            <input type="text" name="city" value={formData.city} onChange={handleInputChange} required placeholder="City" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black" />
+                            <input type="text" name="postalCode" value={formData.postalCode} onChange={handleInputChange} required placeholder="Postal code" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black" />
                             <div className="col-span-2 relative">
-                                <input type="tel" placeholder="Phone" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black pr-10" />
+                                <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} required placeholder="Phone" className="w-full h-11 px-3 rounded-md border border-gray-300 text-[13px] outline-none focus:border-black pr-10" />
                                 <Info className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 cursor-help" />
                             </div>
                         </div>
@@ -135,17 +211,16 @@ export default function CheckoutPage() {
 
                     {/* Pay Now Button */}
                     <div className="mt-10">
-                        <Button className="w-full bg-black hover:bg-gray-800 h-14 rounded-md text-base font-bold transition-all transform active:scale-[0.98]">
-                            Complete Order
+                        <Button type="submit" disabled={isSubmitting} className="w-full bg-black hover:bg-gray-800 h-14 rounded-md text-base font-bold transition-all transform active:scale-[0.98]">
+                            {isSubmitting ? 'Processing...' : 'Complete Order'}
                         </Button>
                         <p className="text-center text-[10px] text-gray-400 mt-4 leading-relaxed">
-                            By clicking complete order, you agree to our Terms of Service and Refund Policy.
+                            By clicking complete order, you agree to our Terms of Service.
                             Secure payment powered by Stripe.
                         </p>
                     </div>
 
                     <footer className="mt-12 pt-8 border-t border-gray-100 flex flex-wrap gap-x-6 gap-y-2 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                        <Link href="#" className="hover:text-black transition-colors">Refund policy</Link>
                         <Link href="#" className="hover:text-black transition-colors">Shipping policy</Link>
                         <Link href="#" className="hover:text-black transition-colors">Privacy policy</Link>
                         <Link href="#" className="hover:text-black transition-colors">Terms of service</Link>
@@ -176,7 +251,7 @@ export default function CheckoutPage() {
                                         </p>
                                     </div>
                                     <div className="text-xs font-bold text-black">
-                                        £{(item.price * item.quantity).toFixed(2)}
+                                        ${(item.price * item.quantity).toFixed(2)}
                                     </div>
                                 </div>
                             ))}
@@ -198,19 +273,19 @@ export default function CheckoutPage() {
                         <div className="space-y-2 pt-1">
                             <div className="flex justify-between text-[13px] text-gray-500 font-medium">
                                 <span>Subtotal • {cart.reduce((a, b) => a + b.quantity, 0)} items</span>
-                                <span className="font-bold text-black uppercase">£{subtotal.toFixed(2)}</span>
+                                <span className="font-bold text-black uppercase">${subtotal.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between text-[13px] text-gray-500 font-medium">
                                 <span>Shipping</span>
                                 <span className="text-[11px] font-bold uppercase">
-                                    {shipping === 0 ? "Free" : `£${shipping.toFixed(2)}`}
+                                    {shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}
                                 </span>
                             </div>
                             <div className="flex justify-between items-end pt-6 border-t border-gray-100 mt-4">
                                 <span className="text-lg font-black text-black uppercase">Total</span>
                                 <div className="text-right flex items-center gap-2">
-                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">GBP</span>
-                                    <span className="text-2xl font-black text-black leading-none">£{total.toFixed(2)}</span>
+                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">USD</span>
+                                    <span className="text-2xl font-black text-black leading-none">${total.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>
@@ -237,7 +312,7 @@ export default function CheckoutPage() {
                     </div>
                 </div>
 
-            </div>
+            </form>
         </div>
     )
 }

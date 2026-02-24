@@ -70,7 +70,7 @@ export function TestimonialsSection() {
               whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: isMobile ? 0 : 0.6 }}
-              className="group bg-white p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] border border-gray-100 shadow-sm sm:hover:shadow-2xl sm:transition-all sm:duration-500 sm:hover:-translate-y-2 flex flex-col items-center text-center h-full"
+              className="group bg-[#F8F8F8] p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] border border-gray-100 shadow-sm sm:hover:shadow-2xl sm:transition-all sm:duration-500 sm:hover:-translate-y-2 flex flex-col items-center text-center h-full"
             >
               {/* Client Image */}
               <div className="relative w-16 h-16 sm:w-24 h-24 mb-4 sm:mb-6 ring-4 ring-red-50 group-hover:ring-brand-red/20 transition-all duration-500 rounded-full overflow-hidden">

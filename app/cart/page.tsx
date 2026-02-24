@@ -97,8 +97,8 @@ export default function CartPage() {
                                                             </button>
                                                         </div>
                                                         <div className="text-right">
-                                                            <p className="text-xl font-bold">£{(item.price * item.quantity).toFixed(2)}</p>
-                                                            <p className="text-xs text-gray-400">£{item.price.toFixed(2)} / unit</p>
+                                                            <p className="text-xl font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                                                            <p className="text-xs text-gray-400">${item.price.toFixed(2)} / unit</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -121,22 +121,22 @@ export default function CartPage() {
                                     <div className="space-y-4 mb-8">
                                         <div className="flex justify-between text-gray-500">
                                             <span>Subtotal</span>
-                                            <span className="text-black font-bold">£{subtotal.toFixed(2)}</span>
+                                            <span className="text-black font-bold">${subtotal.toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between text-gray-500">
                                             <span>Shipping Fee</span>
                                             <span className="text-black font-bold">
-                                                {shipping === 0 ? <span className="text-green-500">Free</span> : `£${shipping.toFixed(2)}`}
+                                                {shipping === 0 ? <span className="text-green-500">Free</span> : `$${shipping.toFixed(2)}`}
                                             </span>
                                         </div>
                                         <div className="flex justify-between text-gray-500">
                                             <span>Estimated Tax</span>
-                                            <span className="text-black font-bold">£0.00</span>
+                                            <span className="text-black font-bold">$0.00</span>
                                         </div>
                                         <div className="h-px bg-gray-100 my-2" />
                                         <div className="flex justify-between text-xl font-bold">
                                             <span>Total</span>
-                                            <span>£{total.toFixed(2)}</span>
+                                            <span>${total.toFixed(2)}</span>
                                         </div>
                                     </div>
 
@@ -146,20 +146,7 @@ export default function CartPage() {
                                         </Button>
                                     </Link>
 
-                                    <div className="space-y-4 pt-4">
-                                        <div className="flex items-center gap-3 text-xs text-gray-500">
-                                            <ShieldCheck className="w-4 h-4 text-green-500 shrink-0" />
-                                            <span>Secure payment powered by Stripe.</span>
-                                        </div>
-                                        <div className="flex items-center gap-3 text-xs text-gray-500">
-                                            <Truck className="w-4 h-4 text-gray-400 shrink-0" />
-                                            <span>Free delivery on orders over £100.</span>
-                                        </div>
-                                        <div className="flex items-center gap-3 text-xs text-gray-500">
-                                            <RotateCcw className="w-4 h-4 text-gray-400 shrink-0" />
-                                            <span>30-day easy return policy.</span>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>

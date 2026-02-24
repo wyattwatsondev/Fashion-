@@ -42,8 +42,7 @@ export function SectionHeading({
                         <motion.span
                             initial={{ width: 0 }}
                             whileInView={{ width: '100%' }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.5, duration: 0.8 }}
+                            transition={{ duration: 0.8, delay: 0.5 }}
                             className="absolute -bottom-2 left-0 h-1 bg-brand-red hidden sm:block"
                         />
                     </span>
