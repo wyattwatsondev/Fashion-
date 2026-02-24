@@ -39,7 +39,7 @@ export function ScrollToTop() {
                     exit={{ opacity: 0, scale: 0.8, y: 20 }}
                     onClick={scrollToTop}
                     className="fixed bottom-8 right-8 z-[9999] bg-brand-black hover:bg-brand-red text-white w-8 h-8 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 active:scale-90 border border-white/10 group overflow-hidden"
-                    aria-label="Scroll to top"      
+                    aria-label="Scroll to top"
                 >
                     <div className="relative">
                         <ChevronUp className="w-4 h-4 group-hover:-translate-y-1 transition-transform duration-300" />

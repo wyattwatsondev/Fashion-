@@ -52,9 +52,9 @@ export function ProductInfo({ product }: ProductInfoProps) {
                 <div className="flex items-center gap-4">
                     <div className="flex items-baseline gap-2">
                         {product.originalPrice && (
-                            <span className="text-base text-gray-400 line-through">£{product.originalPrice.toFixed(2)}</span>
+                            <span className="text-base text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
                         )}
-                        <span className="text-2xl font-bold text-[#1A1A1A]">£{product.price.toFixed(2)}</span>
+                        <span className="text-2xl font-bold text-[#1A1A1A]">${product.price.toFixed(2)}</span>
                     </div>
                     <div className="h-4 w-px bg-gray-200" />
                     <div className="flex items-center gap-1.5">
@@ -74,7 +74,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
                 </p>
             </div>
 
-         
+
 
             {/* Size Selector */}
             <div className="space-y-2">

@@ -59,7 +59,7 @@ export function ProductCard({
         <div className="mt-2 sm:mt-4 px-0.5 sm:px-1 pb-0.5 sm:pb-1">
           {category && (
             <p className="text-brand-red text-[8px] sm:text-[11px] font-bold uppercase tracking-widest mb-0.5 sm:mb-1">
-              {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
+              {category}
             </p>
           )}
           <h3 className="font-heading font-semibold text-[#1A1A1A] text-[10px] sm:text-sm leading-tight mb-1 sm:mb-1.5 line-clamp-1">
