@@ -77,28 +77,30 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
 
             {/* Size Selector */}
-            <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                    <h3 className="font-bold text-sm text-[#1A1A1A]">
-                        Size: <span className="text-gray-400 font-medium">{selectedSize}</span>
-                    </h3>
-                    <button className="text-gray-400 text-xs font-medium underline">Size Chart</button>
+            {product.sizes && product.sizes.length > 0 && (
+                <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                        <h3 className="font-bold text-sm text-[#1A1A1A]">
+                            Size: <span className="text-gray-400 font-medium">{product.sizes.includes(selectedSize) ? selectedSize : product.sizes[0]}</span>
+                        </h3>
+                        <button className="text-gray-400 text-xs font-medium underline">Size Chart</button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {product.sizes.map((size) => (
+                            <button
+                                key={size}
+                                onClick={() => setSelectedSize(size)}
+                                className={`min-w-[3rem] h-10 rounded-lg border font-bold text-sm transition-all ${selectedSize === size
+                                    ? 'border-black bg-white text-black'
+                                    : 'border-gray-50 bg-[#F7F7F7] text-gray-500'
+                                    }`}
+                            >
+                                {size}
+                            </button>
+                        ))}
+                    </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                    {product.sizes.map((size) => (
-                        <button
-                            key={size}
-                            onClick={() => setSelectedSize(size)}
-                            className={`min-w-[3rem] h-10 rounded-lg border font-bold text-sm transition-all ${selectedSize === size
-                                ? 'border-black bg-white text-black'
-                                : 'border-gray-50 bg-[#F7F7F7] text-gray-500'
-                                }`}
-                        >
-                            {size}
-                        </button>
-                    ))}
-                </div>
-            </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex gap-3 pt-2">

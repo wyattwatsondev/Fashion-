@@ -46,7 +46,7 @@ export default function ProductPage() {
             { name: "Ocean Blue", value: "#4A7091" },
             { name: "Midnight Black", value: "#1A1B20" }
         ],
-        sizes: ["6", "8", "10", "14", "18", "20"]
+        sizes: product.sizes && product.sizes.length > 0 ? product.sizes : []
     } : null
 
     const breadcrumbs = detailedProduct ? [

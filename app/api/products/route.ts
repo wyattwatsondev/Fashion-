@@ -7,7 +7,8 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search") || "";
     const skip = parseInt(searchParams.get("skip") || "0");
-    const limit = parseInt(searchParams.get("limit") || "100");
+    const limit = parseInt(searchParams.get("limit") || "20");
+    const full = searchParams.get("full") === "true";
 
     const where = search 
       ? {
@@ -23,6 +24,15 @@ export async function GET(req: Request) {
       orderBy: { createdAt: "desc" },
       skip: skip,
       take: limit,
+      select: full ? undefined : {
+        id: true,
+        name: true,
+        price: true,
+        image: true,
+        category: true,
+        sizes: true,
+        createdAt: true,
+      } as any
     });
 
     const total = await prisma.product.count({ where: where as any });
@@ -37,7 +47,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, price, image, description, category } = body;
+    const { name, price, image, description, category, sizes } = body;
 
     if (!name || !price || !image || !description || !category) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -50,7 +60,8 @@ export async function POST(req: Request) {
         image,
         description,
         category,
-      },
+        sizes: Array.isArray(sizes) ? sizes : [],
+      } as any,
     });
 
     return NextResponse.json(product, { status: 201 });

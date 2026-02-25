@@ -1,6 +1,6 @@
 'use client'
 
-import { Facebook, Instagram, Twitter } from 'lucide-react'
+import { Facebook, Instagram, Mail, Phone } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -23,15 +23,22 @@ export function Footer() {
             <p className="text-sm leading-relaxed max-w-xs">
               Excellence in streetwear. Join the community and wear your hustle with pride.
             </p>
+            <div className="flex flex-col space-y-2 text-sm">
+              <a href="mailto:Hustlemoblifestyle1@gmail.com" className="flex items-center gap-2 hover:text-brand-red transition-colors">
+                <Mail className="w-4 h-4" />
+                Hustlemoblifestyle1@gmail.com
+              </a>
+              <a href="https://wa.me/17737105399" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-brand-red transition-colors">
+                <Phone className="w-4 h-4" />
+                (773) 710-5399
+              </a>
+            </div>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-brand-red text-gray-400 hover:text-white rounded-full flex items-center justify-center transition-all duration-300">
+              <a href="https://www.facebook.com/profile.php?id=100077499841358" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 hover:bg-brand-red text-gray-400 hover:text-white rounded-full flex items-center justify-center transition-all duration-300">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-brand-red text-gray-400 hover:text-white rounded-full flex items-center justify-center transition-all duration-300">
+              <a href="https://www.instagram.com/glewis_hustlemob/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 hover:bg-brand-red text-gray-400 hover:text-white rounded-full flex items-center justify-center transition-all duration-300">
                 <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-brand-red text-gray-400 hover:text-white rounded-full flex items-center justify-center transition-all duration-300">
-                <Twitter className="w-5 h-5" />
               </a>
             </div>
           </div>
