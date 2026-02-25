@@ -16,47 +16,60 @@ import { ScrollToTop } from '@/components/ScrollToTop'
 import { prisma } from '@/lib/prisma'
 import { Product } from '@/types/product'
 
-async function getAllProducts(): Promise<Product[]> {
+// Helper to fetch lean product data
+async function getSectionProducts(options: {
+  take?: number,
+  where?: any,
+  orderBy?: any
+} = {}) {
   try {
-    const products = await prisma.product.findMany({
-      orderBy: { createdAt: 'desc' },
-    })
-    return products as unknown as Product[]
+    return await prisma.product.findMany({
+      take: options.take || 8,
+      where: options.where,
+      orderBy: options.orderBy || { createdAt: 'desc' },
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        image: true,
+        category: true,
+        // originalPrice: true, // Add if these exist in DB
+        // badge: true,
+        // rating: true
+      }
+    }) as any[]
   } catch (error) {
-    console.error('Failed to fetch products for landing page:', error)
+    console.error('Failed to fetch section products:', error)
     return []
   }
 }
 
 export default async function Home() {
-  const allProducts = await getAllProducts()
+  console.time('HomeDataFetch');
 
-  // ── NEW ARRIVALS: 4 products from ALL categories (newest first) ──────────
-  const newArrivals = allProducts.slice(0, 4)
-
-  // ── BEST SELLERS: 8 products from ALL categories mixed ───────────────────
-  const bestSellers = allProducts.slice(4, 12).length > 0
-    ? allProducts.slice(4, 12)
-    : allProducts.slice(0, 8)
-
-  // ── STREETWEAR COLLECTION: 8 products — shirts + trousers ────────────────
+  // Define categories early
   const streetwearCategories = ['mens-shirts', 'womens-shirts', 'shirts', 'trousers-shorts', 'mens-tshirt', 'womens-tshirt']
-  const streetwear = allProducts
-    .filter(p => p.category && streetwearCategories.includes(p.category))
-    .slice(0, 8)
-
-  // ── BUNDLES COMBO: 4 products from bundles category ──────────────────────
   const bundleCategories = ['bundles-combo', 'bundle', 'bundles']
-  const bundlesRaw = allProducts.filter(p => p.category && bundleCategories.includes(p.category)).slice(0, 4)
-  // Fallback: use latest 4 if no bundles in DB
-  const bundles = bundlesRaw.length > 0 ? bundlesRaw : allProducts.slice(0, 4)
 
-  // ── ACCESSORIES: 4 products from caps-hats category only ─────────────────
-  const capRaw = allProducts.filter(p => p.category === 'caps-hats').slice(0, 4)
-  // Fallback: broader accessories if no caps
-  const accessories = capRaw.length > 0
-    ? capRaw
-    : allProducts.filter(p => p.category && ['hoodies', 'jackets', 'shoes'].includes(p.category)).slice(0, 4)
+  // Fetch all sections in parallel
+  const [newArrivals, bestSellers, streetwear, bundles, accessories] = await Promise.all([
+    getSectionProducts({ take: 4 }),
+    getSectionProducts({ take: 8, orderBy: { name: 'asc' } }),
+    getSectionProducts({
+      take: 8,
+      where: { category: { in: streetwearCategories } }
+    }),
+    getSectionProducts({
+      take: 4,
+      where: { category: { in: bundleCategories } }
+    }),
+    getSectionProducts({
+      take: 4,
+      where: { category: 'caps-hats' }
+    })
+  ]);
+
+  console.timeEnd('HomeDataFetch');
 
   return (
     <div className="min-h-screen bg-white">

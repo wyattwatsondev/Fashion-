@@ -15,6 +15,7 @@ model Product {
   image       String
   description String
   category    String
+  sizes       String[] @default([])
   createdAt   DateTime @default(now())
 }
 

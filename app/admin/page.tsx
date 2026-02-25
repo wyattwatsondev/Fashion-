@@ -66,6 +66,7 @@ interface Product {
     image: string;
     description: string;
     category: string;
+    sizes?: string[];
 }
 
 interface Order {
@@ -137,6 +138,7 @@ export default function AdminPage() {
         image: '',
         description: '',
         category: '',
+        sizes: '',
     });
     const [categoryFilter, setCategoryFilter] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -214,7 +216,7 @@ export default function AdminPage() {
 
     const fetchProducts = async () => {
         try {
-            const res = await fetch('/api/products');
+            const res = await fetch('/api/products?full=true&limit=1000');
             const data = await res.json();
             if (data && data.products) {
                 setProducts(data.products);
@@ -238,11 +240,14 @@ export default function AdminPage() {
             const res = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    sizes: formData.sizes ? formData.sizes.split(',').map(s => s.trim()).filter(s => s !== '') : [],
+                }),
             });
 
             if (res.ok) {
-                setFormData({ name: '', price: '', image: '', description: '', category: '' });
+                setFormData({ name: '', price: '', image: '', description: '', category: '', sizes: '' });
                 setEditingId(null);
                 setIsDialogOpen(false);
                 fetchProducts();
@@ -263,6 +268,7 @@ export default function AdminPage() {
             image: product.image,
             description: product.description,
             category: product.category,
+            sizes: Array.isArray(product.sizes) ? product.sizes.join(', ') : '',
         });
         setIsDialogOpen(true);
     };
@@ -325,7 +331,7 @@ export default function AdminPage() {
                                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                     <DialogTrigger asChild>
                                         <Button
-                                            onClick={() => { setEditingId(null); setFormData({ name: '', price: '', image: '', description: '', category: '' }); }}
+                                            onClick={() => { setEditingId(null); setFormData({ name: '', price: '', image: '', description: '', category: '', sizes: '' }); }}
                                             className="bg-black text-white hover:bg-gray-800 rounded-lg px-4 font-bold flex items-center gap-2"
                                         >
                                             <Plus size={18} />
@@ -361,28 +367,13 @@ export default function AdminPage() {
                                                     />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-gray-500 uppercase">Product Image</label>
+                                                    <label className="text-xs font-bold text-gray-500 uppercase">Sizes (comma separated)</label>
                                                     <Input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        onChange={(e) => {
-                                                            const file = e.target.files?.[0];
-                                                            if (file) {
-                                                                const reader = new FileReader();
-                                                                reader.onloadend = () => {
-                                                                    setFormData({ ...formData, image: reader.result as string });
-                                                                };
-                                                                reader.readAsDataURL(file);
-                                                            }
-                                                        }}
-                                                        className="rounded-xl h-11 pt-2 file:bg-black file:text-white file:rounded-md file:border-none file:px-3 file:py-1 file:text-[10px] file:font-bold file:mr-3"
-                                                        required={!editingId}
+                                                        value={formData.sizes}
+                                                        onChange={(e) => setFormData({ ...formData, sizes: e.target.value })}
+                                                        placeholder="S, M, L, XL"
+                                                        className="rounded-xl h-11 border-2 border-black/10"
                                                     />
-                                                    {formData.image && (
-                                                        <div className="mt-2 h-16 w-16 rounded-lg overflow-hidden border">
-                                                            <img src={formData.image} alt="Preview" className="h-full w-full object-cover" />
-                                                        </div>
-                                                    )}
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="text-xs font-bold text-gray-500 uppercase">Category</label>
@@ -403,7 +394,31 @@ export default function AdminPage() {
                                                         <option value="bundles-combo">Bundles & Combo</option>
                                                     </select>
                                                 </div>
-                                                <div className="col-span-1 md:col-span-2 space-y-2">
+                                                <div className="md:col-span-2 space-y-2 pt-2 border-t">
+                                                    <label className="text-xs font-bold text-gray-400 uppercase">Product Image</label>
+                                                    <Input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (file) {
+                                                                const reader = new FileReader();
+                                                                reader.onloadend = () => {
+                                                                    setFormData({ ...formData, image: reader.result as string });
+                                                                };
+                                                                reader.readAsDataURL(file);
+                                                            }
+                                                        }}
+                                                        className="rounded-xl h-11 pt-2 file:bg-gray-100 file:text-black file:rounded-md file:border-none file:px-3 file:py-1 file:text-[10px] file:font-bold file:mr-3"
+                                                        required={!editingId}
+                                                    />
+                                                    {formData.image && (
+                                                        <div className="mt-2 h-16 w-16 rounded-lg overflow-hidden border">
+                                                            <img src={formData.image} alt="Preview" className="h-full w-full object-cover" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="md:col-span-2 space-y-2">
                                                     <label className="text-xs font-bold text-gray-500 uppercase">Description</label>
                                                     <textarea
                                                         value={formData.description}

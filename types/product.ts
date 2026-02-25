@@ -8,4 +8,5 @@ export interface Product {
     rating?: number;
     reviews?: number;
     badge?: string;
+    sizes?: string[];
 }

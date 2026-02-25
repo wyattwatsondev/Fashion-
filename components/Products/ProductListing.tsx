@@ -111,7 +111,7 @@ export function ProductListing() {
             }
         }
         fetchMore()
-    }, [skip, categoryFilter, searchQuery, dbProducts.length]) // Added dbProducts.length to dependencies for hasMore calculation
+    }, [skip, categoryFilter, searchQuery]) // Removed dbProducts.length to fix infinite loop
 
     return (
         <div className="flex-1">

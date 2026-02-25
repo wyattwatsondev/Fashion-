@@ -5,26 +5,9 @@ import { X, Phone, Mail } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export function TopBar() {
-  const [isVisible, setIsVisible] = useState(true)
+  // Permanently visible per user preference
+  const isVisible = true;
 
-  // Auto hide after 8 seconds
-  useEffect(() => {
-    if (!isVisible) return
-    const timer = setTimeout(() => setIsVisible(false), 8000)
-    return () => clearTimeout(timer)
-  }, [isVisible])
-
-  // Show again when user scrolls to top
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY === 0) {
-        setIsVisible(true)
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   return (
     <AnimatePresence>
@@ -34,7 +17,7 @@ export function TopBar() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -20, opacity: 0 }}
           transition={{ duration: 0.4 }}
-          className="w-full bg-gray-900 text-white 
+          className="w-full bg-gray-800 text-white 
                      flex items-center justify-between 
                      h-9 sm:h-11
                      px-3 sm:px-8
@@ -53,27 +36,17 @@ export function TopBar() {
             <div className="flex items-center gap-1">
               <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">
-                +1 (234) 567-890
+                7737105399
               </span>
             </div>
 
             {/* Email */}
             <div className="flex items-center gap-1">
               <Mail className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="truncate max-w-[110px] sm:max-w-none">
-                hello@example.com
+              <span className="truncate max-w-[110px] sm:max-w-none lowercase">
+                Hustlemoblifestyle1@gmail.com
               </span>
             </div>
-
-            {/* Close Button */}
-            <button
-              onClick={() => setIsVisible(false)}
-              className="p-1 hover:bg-white/20 rounded transition-colors"
-              aria-label="Close top bar"
-            >
-              <X className="w-3 h-3 sm:w-4 sm:h-4" />
-            </button>
-
           </div>
         </motion.div>
       )}
