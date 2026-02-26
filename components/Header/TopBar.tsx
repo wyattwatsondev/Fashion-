@@ -20,33 +20,41 @@ export function TopBar() {
           className="w-full bg-gray-800 text-white 
                      flex items-center justify-between 
                      h-9 sm:h-11
-                     px-3 sm:px-8
-                     text-[11px] sm:text-sm
+                     px-2 sm:px-8
+                     text-[9px] sm:text-sm
                      shadow-md"
         >
           {/* Left Side */}
-          <p className="font-medium truncate">
+          <p className="font-medium truncate pr-2">
             Get 25% OFF on your first order!
           </p>
 
           {/* Right Side */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
 
             {/* Phone */}
-            <div className="flex items-center gap-1">
-              <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">
+            <a
+              href="https://wa.me/7737105399"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 hover:text-brand-red transition-colors"
+            >
+              <Phone className="w-2.5 h-2.5 sm:w-4 sm:h-4" />
+              <span>
                 7737105399
               </span>
-            </div>
+            </a>
 
             {/* Email */}
-            <div className="flex items-center gap-1">
-              <Mail className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="truncate max-w-[110px] sm:max-w-none lowercase">
+            <a
+              href="mailto:Hustlemoblifestyle1@gmail.com"
+              className="flex items-center gap-1 hover:text-brand-red transition-colors"
+            >
+              <Mail className="w-2.5 h-2.5 sm:w-4 sm:h-4" />
+              <span className="lowercase">
                 Hustlemoblifestyle1@gmail.com
               </span>
-            </div>
+            </a>
           </div>
         </motion.div>
       )}

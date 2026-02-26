@@ -15,7 +15,7 @@ export function CategoryGrid() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, staggerChildren: 0.1 }}
-        className="grid grid-cols-3 sm:grid-cols-4 gap-2 gap-y-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto mt-6"
+        className="grid grid-cols-4 sm:grid-cols-4 gap-2 gap-y-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto mt-6"
       >
         {categories.categories.map((category) => (
           <motion.div

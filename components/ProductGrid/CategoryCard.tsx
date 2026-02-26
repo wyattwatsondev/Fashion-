@@ -25,7 +25,7 @@ export function CategoryCard({
         className="flex flex-col items-center gap-2 group cursor-pointer"
       >
         {/* Circular Image Container */}
-        <div className="relative w-20 h-20 sm:w-40 sm:h-40 lg:w-48 lg:h-48 rounded-full overflow-hidden flex-shrink-0 transition-all duration-500">
+        <div className="relative w-16 h-16 sm:w-40 sm:h-40 lg:w-48 lg:h-48 rounded-full overflow-hidden flex-shrink-0 transition-all duration-500">
           <Image
             src={image || "/placeholder.svg"}
             alt={name}

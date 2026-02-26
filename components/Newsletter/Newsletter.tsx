@@ -19,7 +19,7 @@ export function Newsletter() {
   }
 
   return (
-    <section className="w-full bg-white text-gray-900 py-10 sm:py-16 border-y border-gray-100 overflow-hidden">
+    <section className="w-full bg-white text-gray-900 py-10 sm:py-8 border-y border-gray-100 overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -51,11 +51,11 @@ export function Newsletter() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="flex-1 px-4 sm:px-12 py-2 sm:py-3 rounded-full border border-gray-200 text-gray-900 outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all font-medium text-sm sm:text-lg bg-gray-50/50"
+            className="flex-1 px-4 sm:px-8 py-2 sm:py-2 rounded-full border border-gray-200 text-gray-900 outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all font-medium text-sm sm:text-lg bg-gray-50/50"
           />
           <Button
             type="submit"
-            className="bg-brand-black hover:bg-brand-red text-white font-black px-6 sm:px-8 py-3 sm:py-6 rounded-full transition-all duration-300 whitespace-nowrap uppercase tracking-widest text-sm sm:text-lg shadow-xl"
+            className="bg-brand-black hover:bg-brand-red text-white font-black px-6 sm:px-6 py-3 sm:py-6 rounded-full transition-all duration-300 whitespace-nowrap  tracking-widest text-sm sm:text-md shadow-xl"
           >
             Subscribe
           </Button>

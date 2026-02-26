@@ -31,6 +31,7 @@ export const metadata: Metadata = {
 }
 
 import { CartSidebar } from "@/components/Cart/CartSidebar"
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton"
 
 export default function RootLayout({
   children,
@@ -42,6 +43,7 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-white text-gray-900">
         {children}
         <CartSidebar />
+        <WhatsAppButton />
       </body>
     </html>
   )

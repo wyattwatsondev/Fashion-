@@ -42,7 +42,7 @@ export function GallerySection() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+          className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
         >
           {galleryItems.map((item, index) => (
             <motion.div
@@ -51,7 +51,7 @@ export function GallerySection() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
-              className={`${item.id === 1 || item.id === 4 ? 'sm:row-span-2' : ''} relative group overflow-hidden rounded-[2.5rem] h-64 sm:h-80 lg:h-96 cursor-pointer border border-gray-100 shadow-sm`}
+              className={`${item.id === 1 || item.id === 4 ? 'sm:row-span-2' : ''} relative group overflow-hidden rounded-[1.5rem] sm:rounded-[2.5rem] h-40 sm:h-80 lg:h-96 cursor-pointer border border-gray-100 shadow-sm`}
             >
               <Image
                 src={item.image || '/placeholder.svg'}
