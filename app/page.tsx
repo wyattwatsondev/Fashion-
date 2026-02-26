@@ -45,31 +45,31 @@ async function getSectionProducts(options: {
 }
 
 export default async function Home() {
-  console.time('HomeDataFetch');
 
   // Define categories early
   const streetwearCategories = ['mens-shirts', 'womens-shirts', 'shirts', 'trousers-shorts', 'mens-tshirt', 'womens-tshirt']
   const bundleCategories = ['bundles-combo', 'bundle', 'bundles']
 
-  // Fetch all sections in parallel
-  const [newArrivals, bestSellers, streetwear, bundles, accessories] = await Promise.all([
-    getSectionProducts({ take: 4 }),
-    getSectionProducts({ take: 8, orderBy: { name: 'asc' } }),
-    getSectionProducts({
-      take: 8,
-      where: { category: { in: streetwearCategories } }
-    }),
-    getSectionProducts({
-      take: 4,
-      where: { category: { in: bundleCategories } }
-    }),
-    getSectionProducts({
-      take: 4,
-      where: { category: 'caps-hats' }
-    })
-  ]);
+  // Fetch all products once for all sections (Consolidated to fix connection pool timeout)
+  const allProducts = await prisma.product.findMany({
+    take: 150, // Grab enough to cover all sections
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      name: true,
+      price: true,
+      image: true,
+      category: true,
+    }
+  })
 
-  console.timeEnd('HomeDataFetch');
+  // Filter products in memory
+  const newArrivals = allProducts.slice(0, 4)
+  const bestSellers = [...allProducts].sort((a, b) => a.name.localeCompare(b.name)).slice(0, 8)
+  const streetwear = allProducts.filter(p => streetwearCategories.includes(p.category)).slice(0, 8)
+  const bundles = allProducts.filter(p => bundleCategories.includes(p.category)).slice(0, 4)
+  const accessories = allProducts.filter(p => p.category === 'caps-hats').slice(0, 4)
+
 
   return (
     <div className="min-h-screen bg-white">

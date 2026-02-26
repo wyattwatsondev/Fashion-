@@ -5,11 +5,11 @@ export function FeaturedBanner() {
   return (
     <section className="relative w-full overflow-hidden">
       {/* Background */}
-      <div className="relative w-full h-[110px] sm:h-[260px] lg:h-[440px]">
+      <div className="relative w-full h-[110px] sm:h-[260px] lg:h-[500px]">
         {/* Mobile Image */}
         <div className="w-full flex justify-center">
           <Image
-            src="/ProductImages/95.png"
+            src="/Newbanner.png"
             alt="hero"
             width={600}
             height={600}
@@ -20,7 +20,7 @@ export function FeaturedBanner() {
 
         {/* Desktop Image */}
         <Image
-          src="/ProductImages/95.png"
+          src="/Newbanner.png"
           alt="Jackets & Hoodies Collection"
           fill
           priority

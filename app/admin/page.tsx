@@ -216,7 +216,7 @@ export default function AdminPage() {
 
     const fetchProducts = async () => {
         try {
-            const res = await fetch('/api/products?full=true&limit=1000');
+            const res = await fetch('/api/products?full=true&limit=50');
             const data = await res.json();
             if (data && data.products) {
                 setProducts(data.products);

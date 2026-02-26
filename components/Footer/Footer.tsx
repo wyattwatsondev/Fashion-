@@ -74,7 +74,7 @@ export function Footer() {
             <h3 className="text-white font-heading font-semibold text-base mb-6 underline decoration-brand-red decoration-2 underline-offset-8">Support</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/contact" className="hover:text-brand-red transition-colors flex items-center gap-2">
+                <Link href="https://wa.me/17737105399" className="hover:text-brand-red transition-colors flex items-center gap-2">
                   <span className="w-1 h-1 bg-brand-red rounded-full" />
                   Contact Us
                 </Link>
